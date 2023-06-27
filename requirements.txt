@@ -1,0 +1,6 @@
+fastai==2.7.9
+wandb
+UPIT==0.2.2
+scipy
+scikit-image
+fastgpu @ git+https://github.com/fastai/fastgpu.git

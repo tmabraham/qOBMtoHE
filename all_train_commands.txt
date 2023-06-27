@@ -1,0 +1,31 @@
+# Train models on mouse liver data
+python main.py --experiment "60x_mouse_liver_inverted" --dataset_name 60x_mouse_liver --data_dir /mnt/tmabraham/data/qobmtohe/final
+
+# Train models on inverted data
+python main.py --experiment_name "60x_tumor_subtype_1_inverted" --dataset "60x_tumor_subtype_1/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_tumor_subtype_2_inverted" --dataset "60x_tumor_subtype_2/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_cortex_inverted" --dataset "60x_cortex/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_midbrain_inverted" --dataset "60x_midbrain/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+
+# Train models on combined data
+python main.py --experiment_name "60x_combined_inverted" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_combined_inverted_larger_gen_disc" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12
+
+# Train models on uninverted data
+python main.py --experiment_name "60x_tumor_subtype_1_uninverted" --dataset "60x_tumor_subtype_1/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_tumor_subtype_2_uninverted" --dataset "60x_tumor_subtype_2/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_cortex_uninverted" --dataset "60x_cortex/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_midbrain_uninverted" --dataset "60x_midbrain/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+
+#  Transfer learning on human comparison
+python main.py --experiment_name "60x_human_tumor_inverted" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final
+python main.py --experiment_name "60x_human_tumor_inverted_fine_tuned_from_combined" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name 200fit_cyclegan_60x_combined_inverted_larger_gen_disc  
+
+# Better quality human data
+python main.py --experiment_name "60x_human_tumor_inverted_hr_he_fine_tuned_from_combined" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --he_folder "trainB_hr" --disc_layers 6 --gen_blocks 12 --load_model_name 200fit_cyclegan_60x_combined_inverted_larger_gen_disc 
+
+# Train model on raw captures
+python main.py --experiment_name "60x_raw_cortex" --dataset_name "60x_raw_cortex" --data_dir /mnt/tmabraham/data/qobmtohe/final
+
+# Train model on DPC
+python main.py --experiment_name "60x_dpc_cortex" --dataset_name "60x_dpc_cortex" --data_dir /mnt/tmabraham/data/qobmtohe/final

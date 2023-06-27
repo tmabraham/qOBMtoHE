@@ -1,0 +1,52 @@
+# Inference on mouse liver data
+python inference.py --experiment_name "60x_mouse_liver_inverted_inference" --dataset_name 60x_mouse_liver --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name 200fit_cyclegan_60x_mouse_liver_inverted --montage_size 1848 1848 --overlapping_stride 167
+
+# Inference on inverted data
+python inference.py --experiment_name "60x_tumor_subtype_1_inverted_inference" --dataset "60x_tumor_subtype_1/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_tumor_subtype_1_inverted"
+python inference.py --experiment_name "60x_tumor_subtype_2_inverted_inference" --dataset "60x_tumor_subtype_2/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_tumor_subtype_2_inverted"
+python inference.py --experiment_name "60x_cortex_inverted_inference" --dataset "60x_cortex/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_cortex_inverted"
+python inference.py --experiment_name "60x_midbrain_inverted_inference" --dataset "60x_midbrain/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_midbrain_inverted"
+
+# Inference on uninverted data
+python inference.py --experiment_name "60x_tumor_subtype_1_uninverted_inference" --dataset "60x_tumor_subtype_1/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_tumor_subtype_1_uninverted"
+python inference.py --experiment_name "60x_tumor_subtype_2_uninverted_inference" --dataset "60x_tumor_subtype_2/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_tumor_subtype_2_uninverted"
+python inference.py --experiment_name "60x_cortex_uninverted_inference" --dataset "60x_cortex/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_cortex_uninverted"
+python inference.py --experiment_name "60x_midbrain_uninverted_inference" --dataset "60x_midbrain/uninverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_midbrain_uninverted"
+
+# Inference on combined data
+python inference.py --experiment_name "60x_combined_inverted_inference" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_combined_inverted"
+python inference.py --experiment_name "60x_combined_inverted_larger_gen_disc_inference" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_combined_inverted_larger_gen_disc"
+
+# Inference on human
+python inference.py --experiment_name "60x_combined_inverted_larger_gen_disc_human_tumor_inference" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_combined_inverted_larger_gen_disc" --test_folder ../../60x_human_tumor/inverted/test_qobm
+
+# Inference with transfer learning on human comparison
+python inference.py --experiment_name "60x_human_tumor_inverted_inference" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_human_tumor_inverted"
+python inference.py --experiment_name "60x_human_tumor_inverted_fine_tuned_from_combined_inference" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_human_tumor_inverted_fine_tuned_from_combined"  
+
+# Inference with training on better quality human data
+python inference.py --experiment_name "60x_human_tumor_inverted_hr_he_fine_tuned_from_combined_inference" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_human_tumor_inverted_hr_he_fine_tuned_from_combined"
+
+# Inference on human healthy
+python inference.py --experiment "60x_human_healthy_inference" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_human_tumor_inverted_hr_he_fine_tuned_from_combined" --test_folder ../../60x_human_healthy
+
+# Inference on even more human data
+python inference.py --experiment "60x_human_humor_extra_inference" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_human_tumor_inverted_hr_he_fine_tuned_from_combined" --test_folder ../../60x_human_tumor_extra
+
+# Inference on human Z stack data 
+python inference.py --experiment_name "60x_human_zstack_inference" --dataset "60x_human_tumor/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_human_tumor_inverted_hr_he_fine_tuned_from_combined" --test_folder ../../../60x_human_zstack/test_zstack --montage_size 1848 1848 --overlapping_stride 167
+
+# Inference on rat mixed data
+python inference.py --experiment_name "60x_rat_mixed_inference" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_combined_inverted_larger_gen_disc" --test_folder ../../60x_rat_mixed/test_mixed --montage_size 1748 1748 --overlapping_stride 103
+
+# Inference on Z stack
+python inference.py --experiment_name "60x_zstack_inference" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_combined_inverted_larger_gen_disc" --test_folder ../../60x_stack/test_zstack
+
+# Inference on strip 
+python inference.py --experiment_name "60x_strip_inference" --dataset "60x_combined/inverted" --data_dir /mnt/tmabraham/data/qobmtohe/final --disc_layers 6 --gen_blocks 12 --load_model_name "200fit_cyclegan_60x_combined_inverted_larger_gen_disc" --test_folder ../../60x_strip --montage_size 2844 36972 --overlapping_stride 158
+
+# Inference on raw captures
+python inference.py --experiment_name "60x_raw_cortex_inference" --dataset_name "60x_raw_cortex" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_raw_cortex"
+
+# Inference on DPC
+python inference.py --experiment_name "60x_dpc_cortex_inference" --dataset_name "60x_dpc_cortex" --data_dir /mnt/tmabraham/data/qobmtohe/final --load_model_name "200fit_cyclegan_60x_dpc_cortex"
