@@ -60,9 +60,13 @@ if __name__ == '__main__':
                         ) # Set up learner
 
     # Load model
-    model_artifact = wandb.run.use_artifact(args.load_model_name+":latest")    
-    model_dir = Path(model_artifact.download())
-    model_file_name = model_dir.ls()[0].name[:-4]
+    if os.path.isfile(args.load_model_name+'.pth'):
+        model_dir = Path(args.load_model_name+'.pth').parents[0]
+        model_file_name = Path(args.load_model_name+'.pth').stem
+    else:
+        model_artifact = wandb.run.use_artifact(args.load_model_name+":latest")
+        model_dir = Path(model_artifact.download())
+        model_file_name = model_dir.ls()[0].name[:-4]
     print(model_file_name)
     learn.model_dir = model_dir
     learn.load(model_file_name)
