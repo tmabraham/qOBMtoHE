@@ -15,50 +15,20 @@ import time
 torch.backends.cudnn.benchmark = True
 
 
+@torch.compile(mode='max-autotune')
+def call_model(model,im):
+    with torch.inference_mode(): preds = model(im)/2 + 0.5
+    return preds
 
-def load_dataset(test_path,bs=4,num_workers=4):
-    "A helper function for getting a DataLoader for images in the folder `test_path`, with batch size `bs`, and number of workers `num_workers`"
-    dataset = FolderDataset(
-            path=test_path,
-            transforms=[torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
-        ) 
-    loader = torch.utils.data.DataLoader(
-            dataset,
-            batch_size=bs,
-            num_workers=num_workers,
-            shuffle=True,
-            pin_memory=True
-        )
-    return loader
-
-def get_preds_cyclegan(learn,test_path,pred_path,convert_to='B',bs=4,num_workers=0,device='cuda',suffix='tif'):
-    """
-    A prediction function that takes the Learner object `learn` with the trained model, the `test_path` folder with the images to perform 
-    batch inference on, and the output folder `pred_path` where the predictions will be saved. The function will convert images to the domain 
-    specified by `convert_to` (default is 'B'). The other arguments are the batch size `bs` (default=4), `num_workers` (default=4), the `device`
-    to run inference on (default='cuda') and suffix of the prediction images `suffix` (default='tif'). 
-    """
-    
-    assert os.path.exists(test_path)
-    
-    if not os.path.exists(pred_path):
-        os.mkdir(pred_path)
-    
-    test_dl = load_dataset(test_path,bs,num_workers)
+def get_preds_cyclegan(learn,test_path,pred_path,convert_to='B',device='cuda',suffix='tif'):
     if convert_to=='B': model = learn.model.G_B.to(device)
     else:               model = learn.model.G_A.to(device)
-    @torch.inference_mode()
-    def _run(_test_dl,_model):
-        for i, xb in progress_bar(enumerate(test_dl),total=len(test_dl)):
-            fn, im = xb
-            preds = (model(im.to(device))/2 + 0.5)
-#        for i in range(len(fn)):
-#            new_fn = os.path.join(pred_path,'.'.join([os.path.basename(fn[i]).split('.')[0]+f'_fake{convert_to}',suffix]))                  
-#            torchvision.utils.save_image(preds[i],new_fn)
-    run_opt = torch.compile(_run, mode='max-autotune')
+    im = Image.open(file)
+    im = ((torchvision.transforms.ToTensor()(im)-0.5)/0.5).unsqueeze(0).cuda()
     start_time = time.time()
-    run_opt(test_dl,model)
+    preds = call_model(model, im)
     print(f"{time.time()-start_time} seconds")
+    torchvision.utils.save_image(preds,pred_path)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Inference for qOBM-to-H&E conversion')
@@ -74,8 +44,6 @@ def parse_args():
     parser.add_argument('--batch_size', default=1, type=int, help='Batch size')
     parser.add_argument('--load_size', default=512, type=int, help='Size of images to be loaded')
     parser.add_argument('--crop_size', default=256, type=int, help='Size of images to be loaded')
-    parser.add_argument('--montage_size', default=[1848, 1848], nargs=2, type=int, help='Size of test image/montage')
-    parser.add_argument('--overlapping_stride', default=167, type=int, help='Stride of overlapping patches')
     parser.add_argument('--gpu', default=-1, type=int, help='GPU ID')
     parser.add_argument('--wandb_project', type=str, default='qOBM-to-H&E-final', help='Wandb project name')
     parser.add_argument('--wandb_entity', type=str, default='tmabraham', help='Wandb entity name')
@@ -128,19 +96,15 @@ if __name__ == '__main__':
 
     # Make directory for patches of test images
     test_path = qobm2he_path/args.test_folder
-    preds_folder = f'./preds_cyclegan_{args.experiment_name}_stride{args.overlapping_stride}'
+    preds_folder = f'./preds_cyclegan_{args.experiment_name}'
     os.makedirs(preds_folder, exist_ok=True)
     files = [Path(os.path.join(test_path,f)) for f in os.listdir(test_path) if os.path.isfile(os.path.join(test_path, f))]
-    for file in files: 
+    for file in files:
         print(file.stem)
-        create_tiles(str(file),(args.load_size,args.load_size),args.overlapping_stride,str(test_path/file.stem)+'/')
-        get_preds_cyclegan(learn,str(test_path/file.stem),preds_folder+'/'+file.stem,bs=args.batch_size)
- #       images = files_to_array((preds_folder+'/'+file.stem),window_size=(args.load_size,args.load_size),total_size=tuple(args.montage_size),stride=args.overlapping_stride) # Collate predictions into array
- #       montage = formMontage(images,stride=args.overlapping_stride) # Create montage of predictions
- #       plt.imsave(preds_folder+'/_'+file.stem+f'_stride{args.overlapping_stride}_montage.png',montage.astype('uint8'))
+        get_preds_cyclegan(learn, file, preds_folder+'/'+file.stem+'_conversion.png')
     
- #   preds_artifact = wandb.Artifact(f'preds_cyclegan_{args.experiment_name}_stride{args.overlapping_stride}', type="predictions", description="predictions on train set", metadata=dict(wandb.config))
- #   preds_artifact.add_dir(preds_folder)
+    preds_artifact = wandb.Artifact(f'preds_cyclegan_{args.experiment_name}', type="predictions", description="predictions on train set", metadata=dict(wandb.config))
+    preds_artifact.add_dir(preds_folder)
 
-    #wandb.finish()
+    wandb.finish()
     print('Done!')
